@@ -1,4 +1,3 @@
-workspace = { members = ["echor"] }
 [package]
 name = "hello"
 version = "0.1.0"
