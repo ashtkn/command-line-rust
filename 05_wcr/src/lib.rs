@@ -1,19 +1,32 @@
+use anyhow::Result;
+use clap::Parser;
 use std::{
-    error::Error,
     fs::File,
     io::{self, BufRead, BufReader},
 };
 
-use clap::{App, Arg};
-
-type MyResult<T> = Result<T, Box<dyn Error>>;
-
-#[derive(Debug)]
-pub struct Config {
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+/// Rust version of `wc`
+pub struct Args {
+    /// Input file(s)
+    #[arg(value_name = "FILE", default_value = "-")]
     files: Vec<String>,
+
+    /// Show line count
+    #[arg(short, long)]
     lines: bool,
+
+    /// Show word count
+    #[arg(short, long)]
     words: bool,
+
+    /// Show byte count
+    #[arg(short('c'), long)]
     bytes: bool,
+
+    /// Show character count
+    #[arg(short('m'), long, conflicts_with("bytes"))]
     chars: bool,
 }
 
@@ -25,70 +38,22 @@ pub struct FileInfo {
     num_chars: usize,
 }
 
-pub fn get_args() -> MyResult<Config> {
-    let matches = App::new("wcr")
-        .version("0.1.0")
-        .author("Asahi Takenouchi <asahi.taken@gmail.com>")
-        .about("Rust wc")
-        .arg(
-            Arg::with_name("files")
-                .value_name("FILE")
-                .help("Input file(s)")
-                .default_value("-")
-                .multiple(true),
-        )
-        .arg(
-            Arg::with_name("words")
-                .short("w")
-                .long("words")
-                .help("Show word count")
-                .takes_value(false),
-        )
-        .arg(
-            Arg::with_name("bytes")
-                .short("c")
-                .long("bytes")
-                .help("Show byte count")
-                .takes_value(false),
-        )
-        .arg(
-            Arg::with_name("chars")
-                .short("m")
-                .long("chars")
-                .help("Show character count")
-                .takes_value(false)
-                .conflicts_with("bytes"),
-        )
-        .arg(
-            Arg::with_name("lines")
-                .short("l")
-                .long("lines")
-                .help("Show line count")
-                .takes_value(false),
-        )
-        .get_matches();
+pub fn get_args() -> Result<Args> {
+    let mut args = Args::parse();
 
-    let mut lines = matches.is_present("lines");
-    let mut words = matches.is_present("words");
-    let mut bytes = matches.is_present("bytes");
-    let chars = matches.is_present("chars");
-
-    if [words, bytes, chars, lines].iter().all(|v| v == &false) {
-        lines = true;
-        words = true;
-        bytes = true;
+    if [args.words, args.bytes, args.chars, args.lines]
+        .iter()
+        .all(|v| v == &false)
+    {
+        args.lines = true;
+        args.words = true;
+        args.bytes = true;
     }
 
-    Ok(Config {
-        files: matches.values_of_lossy("files").unwrap(),
-        lines,
-        words,
-        bytes,
-        chars,
-    })
+    Ok(args)
 }
 
-pub fn run(config: Config) -> MyResult<()> {
+pub fn run(config: Args) -> Result<()> {
     let mut total_lines = 0;
     let mut total_words = 0;
     let mut total_bytes = 0;
@@ -133,7 +98,7 @@ pub fn run(config: Config) -> MyResult<()> {
     Ok(())
 }
 
-fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
@@ -148,7 +113,7 @@ fn format_field(value: usize, show: bool) -> String {
     }
 }
 
-fn count(mut file: impl BufRead) -> MyResult<FileInfo> {
+fn count(mut file: impl BufRead) -> Result<FileInfo> {
     let mut num_lines = 0;
     let mut num_words = 0;
     let mut num_bytes = 0;
