@@ -63,14 +63,11 @@ pub fn get_args() -> Result<Args> {
 pub fn run(args: Args) -> Result<()> {
     let type_filter = |entry: &DirEntry| {
         args.entry_types.is_empty()
-            || args
-                .entry_types
-                .iter()
-                .any(|entry_type| match entry_type {
-                    EntryType::Link => entry.file_type().is_symlink(),
-                    EntryType::Dir => entry.file_type().is_dir(),
-                    EntryType::File => entry.file_type().is_file(),
-                })
+            || args.entry_types.iter().any(|entry_type| match entry_type {
+                EntryType::Link => entry.file_type().is_symlink(),
+                EntryType::Dir => entry.file_type().is_dir(),
+                EntryType::File => entry.file_type().is_file(),
+            })
     };
 
     let name_filter = |entry: &DirEntry| {
