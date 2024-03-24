@@ -1,90 +1,66 @@
-use std::error::Error;
-
-use clap::{App, Arg};
+use anyhow::Result;
+use clap::{builder::PossibleValue, ArgAction, Parser, ValueEnum};
 use regex::Regex;
 use walkdir::{DirEntry, WalkDir};
 
-type MyResult<T> = Result<T, Box<dyn Error>>;
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+/// Rust version of `find`
+pub struct Args {
+    /// Search path(s)
+    #[arg(value_name = "PATH", default_value = ".")]
+    paths: Vec<String>,
 
-#[derive(Debug, Eq, PartialEq)]
+    /// Names
+    #[arg(
+        short('n'),
+        long("name"),
+        value_name = "NAME",
+        value_parser(Regex::new),
+        action(ArgAction::Append),
+        num_args(0..)
+    )]
+    names: Vec<Regex>,
+
+    /// Entry types
+    #[arg(
+        short('t'),
+        long("type"),
+        value_name = "TYPE",
+        value_parser(clap::value_parser!(EntryType)),
+        action(ArgAction::Append),
+        num_args(0..)
+    )]
+    entry_types: Vec<EntryType>,
+}
+
+#[derive(Debug, Eq, PartialEq, Clone)]
 enum EntryType {
     Dir,
     File,
     Link,
 }
 
-#[derive(Debug)]
-pub struct Config {
-    paths: Vec<String>,
-    names: Vec<Regex>,
-    entry_types: Vec<EntryType>,
+impl ValueEnum for EntryType {
+    fn value_variants<'a>() -> &'a [Self] {
+        &[EntryType::Dir, EntryType::File, EntryType::Link]
+    }
+
+    fn to_possible_value(&self) -> Option<PossibleValue> {
+        Some(match self {
+            EntryType::Dir => PossibleValue::new("d"),
+            EntryType::File => PossibleValue::new("f"),
+            EntryType::Link => PossibleValue::new("l"),
+        })
+    }
 }
 
-pub fn get_args() -> MyResult<Config> {
-    let matches = App::new("findr")
-        .version("0.1.0")
-        .author("Asahi Takenouchi <asahi.taken@gmail.com>")
-        .about("Rust find")
-        .arg(
-            Arg::with_name("paths")
-                .value_name("PATH")
-                .help("Search paths")
-                .default_value(".")
-                .multiple(true),
-        )
-        .arg(
-            Arg::with_name("names")
-                .value_name("NAME")
-                .short("n")
-                .long("name")
-                .help("Name")
-                .takes_value(true)
-                .multiple(true),
-        )
-        .arg(
-            Arg::with_name("types")
-                .value_name("TYPE")
-                .short("t")
-                .long("type")
-                .help("Entry type")
-                .possible_values(&["f", "d", "l"])
-                .multiple(true)
-                .takes_value(true),
-        )
-        .get_matches();
-
-    let names = matches
-        .values_of_lossy("names")
-        .map(|vals| {
-            vals.into_iter()
-                .map(|name| Regex::new(&name).map_err(|_| format!("Invalid --name \"{}\"", name)))
-                .collect()
-        })
-        .transpose()?
-        .unwrap_or_default();
-
-    let entry_types = matches
-        .values_of_lossy("types")
-        .map(|vals| {
-            vals.iter()
-                .map(|val| match val.as_str() {
-                    "d" => EntryType::Dir,
-                    "f" => EntryType::File,
-                    "l" => EntryType::Link,
-                    _ => unreachable!("Invalid type"),
-                })
-                .collect()
-        })
-        .unwrap_or_default();
-
-    Ok(Config {
-        paths: matches.values_of_lossy("paths").unwrap(),
-        names,
-        entry_types,
-    })
+pub fn get_args() -> Result<Args> {
+    let args = Args::parse();
+    Ok(args)
 }
 
-pub fn run(config: Config) -> MyResult<()> {
+pub fn run(config: Args) -> Result<()> {
     let type_filter = |entry: &DirEntry| {
         config.entry_types.is_empty()
             || config
