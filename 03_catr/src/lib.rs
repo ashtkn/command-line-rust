@@ -1,56 +1,33 @@
+use anyhow::Result;
+use clap::Parser;
 use std::{
-    error::Error,
     fs::File,
     io::{self, BufRead, BufReader},
 };
 
-use clap::{App, Arg};
-
-type MyResult<T> = Result<T, Box<dyn Error>>;
-
-#[derive(Debug)]
-pub struct Config {
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+/// Rust version of `cat`
+pub struct Args {
+    /// Input file(s)
+    #[arg(value_name = "FILE", default_value = "-")]
     files: Vec<String>,
+
+    /// Number lines
+    #[arg(short('n'), long("number"), conflicts_with("number_nonblank_lines"))]
     number_lines: bool,
+
+    /// Number non-blank lines
+    #[arg(short('b'), long("number-nonblank"))]
     number_nonblank_lines: bool,
 }
 
-pub fn get_args() -> MyResult<Config> {
-    let matches = App::new("catr")
-        .version("0.1.0")
-        .author("Asahi Takenouchi <asahi.taken@gmail.com>")
-        .about("Rust cat")
-        .arg(
-            Arg::with_name("files")
-                .value_name("FILE")
-                .help("Input file(s)")
-                .multiple(true)
-                .default_value("-"),
-        )
-        .arg(
-            Arg::with_name("number")
-                .short("n")
-                .long("number")
-                .help("Number lines")
-                .takes_value(false)
-                .conflicts_with("number_nonblank"),
-        )
-        .arg(
-            Arg::with_name("number_nonblank")
-                .short("b")
-                .long("number-nonblank")
-                .help("Number non-blank lines")
-                .takes_value(false),
-        )
-        .get_matches();
-    Ok(Config {
-        files: matches.values_of_lossy("files").unwrap(),
-        number_lines: matches.is_present("number"),
-        number_nonblank_lines: matches.is_present("number_nonblank"),
-    })
+pub fn get_args() -> Result<Args> {
+    let args = Args::parse();
+    Ok(args)
 }
 
-pub fn run(config: Config) -> MyResult<()> {
+pub fn run(config: Args) -> Result<()> {
     for filename in config.files {
         match open(&filename) {
             Err(e) => eprintln!("{}: {}", filename, e),
@@ -77,7 +54,7 @@ pub fn run(config: Config) -> MyResult<()> {
     Ok(())
 }
 
-fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
