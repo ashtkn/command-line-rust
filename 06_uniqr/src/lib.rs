@@ -1,61 +1,41 @@
+use anyhow::{anyhow, Result};
+use clap::Parser;
 use std::{
-    error::Error,
     fs::File,
     io::{self, BufRead, BufReader, Write},
 };
 
-use clap::{App, Arg};
-
-type MyResult<T> = Result<T, Box<dyn Error>>;
-
-#[derive(Debug)]
-pub struct Config {
+#[derive(Debug, Parser)]
+#[command(author, version, about)]
+/// Rust version of `uniq`
+pub struct Args {
+    /// Input file
+    #[arg(value_name = "IN_FILE", default_value = "-")]
     in_file: String,
+
+    /// Output file
+    #[arg(value_name = "OUT_FILE")]
     out_file: Option<String>,
+
+    /// Show counts
+    #[arg(short, long)]
     count: bool,
 }
 
-pub fn get_args() -> MyResult<Config> {
-    let matches = App::new("uniqr")
-        .version("0.1.0")
-        .author("Asahi Takenouchi <asahi.taken@gmail.com>")
-        .about("Rust uniq")
-        .arg(
-            Arg::with_name("in_file")
-                .value_name("IN_FILE")
-                .help("Input file")
-                .default_value("-"),
-        )
-        .arg(
-            Arg::with_name("out_file")
-                .value_name("OUT_FILE")
-                .help("Output file"),
-        )
-        .arg(
-            Arg::with_name("count")
-                .short("c")
-                .long("count")
-                .help("Show counts")
-                .takes_value(false),
-        )
-        .get_matches();
-
-    Ok(Config {
-        in_file: matches.value_of_lossy("in_file").map(Into::into).unwrap(),
-        out_file: matches.value_of("out_file").map(|v| v.to_string()),
-        count: matches.is_present("count"),
-    })
+pub fn get_args() -> Result<Args> {
+    let args = Args::parse();
+    Ok(args)
 }
 
-pub fn run(config: Config) -> MyResult<()> {
-    let mut file = open(&config.in_file).map_err(|e| format!("{}: {}", config.in_file, e))?;
+pub fn run(config: Args) -> Result<()> {
+    let mut file = open(&config.in_file).map_err(|e| anyhow!("{}: {e}", config.in_file))?;
 
     let mut out_file: Box<dyn Write> = match &config.out_file {
         Some(out_name) => Box::new(File::create(out_name)?),
         _ => Box::new(io::stdout()),
     };
 
-    let mut print = |count: u64, text: &str| -> MyResult<()> {
+    let mut print = |count: u64, text: &str| -> Result<()> {
         if count > 0 {
             if config.count {
                 write!(out_file, "{:>4} {}", count, text)?;
@@ -89,7 +69,7 @@ pub fn run(config: Config) -> MyResult<()> {
     Ok(())
 }
 
-fn open(filename: &str) -> MyResult<Box<dyn BufRead>> {
+fn open(filename: &str) -> Result<Box<dyn BufRead>> {
     match filename {
         "-" => Ok(Box::new(BufReader::new(io::stdin()))),
         _ => Ok(Box::new(BufReader::new(File::open(filename)?))),
