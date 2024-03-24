@@ -39,10 +39,10 @@ pub fn get_args() -> Result<Args> {
     Ok(args)
 }
 
-pub fn run(config: Args) -> Result<()> {
-    let num_files = config.files.len();
+pub fn run(args: Args) -> Result<()> {
+    let num_files = args.files.len();
 
-    for (file_num, filename) in config.files.iter().enumerate() {
+    for (file_num, filename) in args.files.iter().enumerate() {
         match open(filename) {
             Err(err) => eprintln!("{}: {}", filename, err),
             Ok(mut file) => {
@@ -54,13 +54,13 @@ pub fn run(config: Args) -> Result<()> {
                     );
                 }
 
-                if let Some(num_bytes) = config.bytes {
+                if let Some(num_bytes) = args.bytes {
                     let mut buffer = vec![0; num_bytes as usize];
                     let bytes_read = file.read(&mut buffer)?;
                     print!("{}", String::from_utf8_lossy(&buffer[..bytes_read]),)
                 } else {
                     let mut line = String::new();
-                    for _ in 0..config.lines {
+                    for _ in 0..args.lines {
                         let bytes = file.read_line(&mut line)?;
                         if bytes == 0 {
                             break;

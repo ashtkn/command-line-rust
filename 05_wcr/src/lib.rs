@@ -53,23 +53,23 @@ pub fn get_args() -> Result<Args> {
     Ok(args)
 }
 
-pub fn run(config: Args) -> Result<()> {
+pub fn run(args: Args) -> Result<()> {
     let mut total_lines = 0;
     let mut total_words = 0;
     let mut total_bytes = 0;
     let mut total_chars = 0;
 
-    for filename in &config.files {
+    for filename in &args.files {
         match open(filename) {
             Err(err) => eprintln!("{}: {}", filename, err),
             Ok(file) => {
                 if let Ok(info) = count(file) {
                     println!(
                         "{}{}{}{}{}",
-                        format_field(info.num_lines, config.lines),
-                        format_field(info.num_words, config.words),
-                        format_field(info.num_bytes, config.bytes),
-                        format_field(info.num_chars, config.chars),
+                        format_field(info.num_lines, args.lines),
+                        format_field(info.num_words, args.words),
+                        format_field(info.num_bytes, args.bytes),
+                        format_field(info.num_chars, args.chars),
                         if filename == "-" {
                             "".to_string()
                         } else {
@@ -85,13 +85,13 @@ pub fn run(config: Args) -> Result<()> {
         }
     }
 
-    if config.files.len() > 1 {
+    if args.files.len() > 1 {
         println!(
             "{}{}{}{} total",
-            format_field(total_lines, config.lines),
-            format_field(total_words, config.words),
-            format_field(total_bytes, config.bytes),
-            format_field(total_chars, config.chars),
+            format_field(total_lines, args.lines),
+            format_field(total_words, args.words),
+            format_field(total_bytes, args.bytes),
+            format_field(total_chars, args.chars),
         );
     }
 

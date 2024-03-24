@@ -60,10 +60,10 @@ pub fn get_args() -> Result<Args> {
     Ok(args)
 }
 
-pub fn run(config: Args) -> Result<()> {
+pub fn run(args: Args) -> Result<()> {
     let type_filter = |entry: &DirEntry| {
-        config.entry_types.is_empty()
-            || config
+        args.entry_types.is_empty()
+            || args
                 .entry_types
                 .iter()
                 .any(|entry_type| match entry_type {
@@ -74,14 +74,14 @@ pub fn run(config: Args) -> Result<()> {
     };
 
     let name_filter = |entry: &DirEntry| {
-        config.names.is_empty()
-            || config
+        args.names.is_empty()
+            || args
                 .names
                 .iter()
                 .any(|re| re.is_match(&entry.file_name().to_string_lossy()))
     };
 
-    for path in &config.paths {
+    for path in &args.paths {
         let entries = WalkDir::new(path)
             .into_iter()
             .filter_map(|e| match e {

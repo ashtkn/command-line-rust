@@ -27,17 +27,17 @@ pub fn get_args() -> Result<Args> {
     Ok(args)
 }
 
-pub fn run(config: Args) -> Result<()> {
-    let mut file = open(&config.in_file).map_err(|e| anyhow!("{}: {e}", config.in_file))?;
+pub fn run(args: Args) -> Result<()> {
+    let mut file = open(&args.in_file).map_err(|e| anyhow!("{}: {e}", args.in_file))?;
 
-    let mut out_file: Box<dyn Write> = match &config.out_file {
+    let mut out_file: Box<dyn Write> = match &args.out_file {
         Some(out_name) => Box::new(File::create(out_name)?),
         _ => Box::new(io::stdout()),
     };
 
     let mut print = |count: u64, text: &str| -> Result<()> {
         if count > 0 {
-            if config.count {
+            if args.count {
                 write!(out_file, "{:>4} {}", count, text)?;
             } else {
                 write!(out_file, "{}", text)?;

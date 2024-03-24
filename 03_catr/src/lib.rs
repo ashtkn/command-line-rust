@@ -27,17 +27,17 @@ pub fn get_args() -> Result<Args> {
     Ok(args)
 }
 
-pub fn run(config: Args) -> Result<()> {
-    for filename in config.files {
+pub fn run(args: Args) -> Result<()> {
+    for filename in args.files {
         match open(&filename) {
             Err(e) => eprintln!("{}: {}", filename, e),
             Ok(file) => {
                 let mut last_num = 0;
                 for (line_num, line_result) in file.lines().enumerate() {
                     let line = line_result?;
-                    if config.number_lines {
+                    if args.number_lines {
                         println!("{:6}\t{}", line_num + 1, line);
-                    } else if config.number_nonblank_lines {
+                    } else if args.number_nonblank_lines {
                         if !line.is_empty() {
                             last_num += 1;
                             println!("{:6}\t{}", last_num, line);
