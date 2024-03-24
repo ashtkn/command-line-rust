@@ -9,22 +9,32 @@ on:
       - main
 
 jobs:
-  ci:
+  prepare:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        project_dir:
-          - 01_hello
-          - 02_echor
-    defaults:
-      run:
-        working-directory: ${{ matrix.project_dir }}
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
           components: rustfmt, clippy
+  integration:
+    runs-on: ubuntu-latest
+    needs: prepare
+    strategy:
+      matrix:
+        project_dir:
+          - 01_hello
+          - 02_echor
+          - 03_catr
+          - 04_headr
+          - 05_wcr
+          - 06_uniqr
+          - 07_findr
+          - 08_cutr
+    defaults:
+      run:
+        working-directory: ${{ matrix.project_dir }}
+    steps:
       - run: cargo check
       - run: cargo fmt --all -- --check
       - run: cargo clippy -- -D warnings
