@@ -9,7 +9,7 @@ fn dies_no_args() -> TestResult {
     Command::cargo_bin("echor")?
         .assert()
         .failure()
-        .stderr(predicates::str::contains("USAGE"));
+        .stderr(predicates::str::contains("Usage"));
     Ok(())
 }
 
