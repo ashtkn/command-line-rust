@@ -23,6 +23,7 @@ jobs:
           - 07_findr
           - 08_cutr
           - 09_grepr
+          - 10_commr
     defaults:
       run:
         working-directory: ${{ matrix.project_dir }}
