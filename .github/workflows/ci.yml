@@ -24,6 +24,7 @@ jobs:
           - 08_cutr
           - 09_grepr
           - 10_commr
+          - 11_tailr
     defaults:
       run:
         working-directory: ${{ matrix.project_dir }}
