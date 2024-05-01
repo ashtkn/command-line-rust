@@ -63,7 +63,7 @@ pub fn run(args: Args) -> Result<()> {
                 let (total_lines, total_bytes) = count_lines_bytes(filename)?;
                 let file = BufReader::new(file);
                 if let Some(num_bytes) = &bytes {
-                    print_bytes(file, &num_bytes, total_bytes)?;
+                    print_bytes(file, num_bytes, total_bytes)?;
                 } else {
                     print_lines(file, &lines, total_lines)?;
                 }
