@@ -6,8 +6,6 @@ OUT_DIR="tests/expected"
 
 [[ ! -d "$OUT_DIR" ]] && mkdir -p "$OUT_DIR"
 
-rm -f $OUT_DIR/*
-
 comm         $IN_DIR/empty.txt $IN_DIR/empty.txt > $OUT_DIR/empty_empty.out
 comm         $IN_DIR/file1.txt $IN_DIR/empty.txt > $OUT_DIR/file1_empty.out
 comm         $IN_DIR/empty.txt $IN_DIR/file2.txt > $OUT_DIR/empty_file2.out
