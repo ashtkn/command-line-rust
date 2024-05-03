@@ -31,6 +31,10 @@ jobs:
         working-directory: ${{ matrix.project_dir }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get fortune
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
