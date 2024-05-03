@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get fortune
+          sudo apt-get install fortune
       - uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
