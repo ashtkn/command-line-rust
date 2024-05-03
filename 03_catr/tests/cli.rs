@@ -175,7 +175,7 @@ fn all_n() -> Result<()> {
 #[test]
 fn all_b() -> Result<()> {
     if cfg!(target_os = "linux") {
-        // Linux version `cat` command with `-n` option behaves differently from macOS version
+        // Linux version `cat` command with `-b` option behaves differently from macOS version
         run(
             &[FOX, SPIDERS, BUSTLE, "-b"],
             "tests/expected/macos/all.b.out",
