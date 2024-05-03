@@ -8,7 +8,6 @@ BOOKS="tests/inputs/books.tsv"
 OUT_DIR="tests/expected"
 
 [[ ! -d "$OUT_DIR" ]] && mkdir -p "$OUT_DIR"
-rm -f $OUT_DIR/*
 
 for FLD in 1 2 3 1-2 2-3 1-3; do
     cut -f $FLD      $TSV > "$OUT_DIR/$(basename $TSV).f${FLD}.out"
