@@ -161,10 +161,20 @@ fn all() -> Result<()> {
 
 #[test]
 fn all_n() -> Result<()> {
-    run(&[FOX, SPIDERS, BUSTLE, "-n"], "tests/expected/all.n.out")
+    if cfg!(target_os = "linux") {
+        // Linux version `cat` command with `-n` option behaves differently from macOS version
+        run(&[FOX, SPIDERS, BUSTLE, "-n"], "tests/expected/macos/all.n.out")
+    } else {
+        run(&[FOX, SPIDERS, BUSTLE, "-n"], "tests/expected/all.n.out")
+    }
 }
 
 #[test]
 fn all_b() -> Result<()> {
-    run(&[FOX, SPIDERS, BUSTLE, "-b"], "tests/expected/all.b.out")
+    if cfg!(target_os = "linux") {
+        // Linux version `cat` command with `-n` option behaves differently from macOS version
+        run(&[FOX, SPIDERS, BUSTLE, "-b"], "tests/expected/macos/all.b.out")
+    } else {
+        run(&[FOX, SPIDERS, BUSTLE, "-b"], "tests/expected/all.b.out")
+    }
 }
