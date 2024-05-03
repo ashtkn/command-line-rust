@@ -57,7 +57,7 @@ pub fn run(args: Args) -> Result<()> {
 
         if line.trim_end() != previous.trim_end() {
             print(count, &previous)?;
-            previous = line.clone();
+            previous.clone_from(&line);
             count = 0;
         }
 
