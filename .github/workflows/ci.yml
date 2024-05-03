@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
         with:
-          toolchain: stable
+          toolchain: 1.26.0
           components: rustfmt, clippy
       - run: ./ci.sh
       - run: cargo check
