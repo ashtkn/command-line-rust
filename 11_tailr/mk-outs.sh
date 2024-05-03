@@ -5,8 +5,6 @@ OUT_DIR="tests/expected"
 
 [[ ! -d "$OUT_DIR" ]] && mkdir -p "$OUT_DIR"
 
-rm -f $OUT_DIR/*
-
 for FILE in $ROOT/*.txt; do
     BASENAME=$(basename "$FILE")
     tail        $FILE > ${OUT_DIR}/${BASENAME}.out

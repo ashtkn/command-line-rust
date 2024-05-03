@@ -277,7 +277,12 @@ fn tsv_c2() -> Result<()> {
 
 #[test]
 fn tsv_c8() -> Result<()> {
-    run(&[TSV, "-c", "8"], "tests/expected/movies1.tsv.c8.out")
+    if cfg!(target_os = "linux") {
+        // Linux version `cut` command with `-c8` option behaves differently from macOS version
+        run(&[TSV, "-c", "8"], "tests/expected/macos/movies1.tsv.c8.out")
+    } else {
+        run(&[TSV, "-c", "8"], "tests/expected/movies1.tsv.c8.out")
+    }
 }
 
 #[test]
@@ -292,7 +297,15 @@ fn tsv_c2_3() -> Result<()> {
 
 #[test]
 fn tsv_c1_8() -> Result<()> {
-    run(&[TSV, "-c", "1-8"], "tests/expected/movies1.tsv.c1-8.out")
+    if cfg!(target_os = "linux") {
+        // Linux version `cut` command with `-c 1-8` option behaves differently from macOS version
+        run(
+            &[TSV, "-c", "1-8"],
+            "tests/expected/macos/movies1.tsv.c1-8.out",
+        )
+    } else {
+        run(&[TSV, "-c", "1-8"], "tests/expected/movies1.tsv.c1-8.out")
+    }
 }
 
 #[test]

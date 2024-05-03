@@ -34,6 +34,7 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
+      - run: ./ci.sh
       - run: cargo check
       - run: cargo fmt --all -- --check
       - run: cargo clippy -- -D warnings
