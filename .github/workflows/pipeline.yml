@@ -12,7 +12,7 @@ jobs:
   pipeline:
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -20,6 +20,8 @@ jobs:
         with:
           toolchain: stable
           components: rustfmt, clippy
+      - run: |
+          ./install-dependencies.sh
       - run: |
           ./check-all.sh
           ./test-all.sh
