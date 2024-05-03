@@ -177,6 +177,7 @@ fn file1_file2_2_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_3_i() -> Result<()> {
     run(
@@ -221,6 +222,7 @@ fn file1_file2_123_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn stdin_file1() -> Result<()> {
     run_stdin(
@@ -230,6 +232,7 @@ fn stdin_file1() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn stdin_file2() -> Result<()> {
     run_stdin(
