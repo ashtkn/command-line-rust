@@ -27,6 +27,7 @@ jobs:
           - 11_tailr
           - 12_fortuner
           - 13_calr
+          - 14_lsr
           - utils/ascii
           - utils/biggie
     defaults:
