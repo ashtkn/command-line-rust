@@ -27,6 +27,8 @@ jobs:
           - 11_tailr
           - 12_fortuner
           - 13_calr
+          - utils/ascii
+          - utils/biggie
     defaults:
       run:
         working-directory: ${{ matrix.project_dir }}
