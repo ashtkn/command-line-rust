@@ -713,10 +713,18 @@ fn multiple_files() -> Result<()> {
 
 #[test]
 fn multiple_files_n0() -> Result<()> {
-    run(
-        &["-n", "0", TWELVE, EMPTY, ONE, THREE, TWO],
-        "tests/expected/all.n0.out",
-    )
+    if cfg!(target_os = "linux") {
+        // Linux version `tail` command with `-n0` option behaves differently from macOS version
+        run(
+            &["-n", "0", TWELVE, EMPTY, ONE, THREE, TWO],
+            "tests/expected/macos/all.n0.out",
+        )
+    } else {
+        run(
+            &["-n", "0", TWELVE, EMPTY, ONE, THREE, TWO],
+            "tests/expected/all.n0.out",
+        )
+    }
 }
 
 #[test]
@@ -785,10 +793,18 @@ fn multiple_files_n_plus_3() -> Result<()> {
 
 #[test]
 fn multiple_files_c0() -> Result<()> {
-    run(
-        &["-c", "0", TWELVE, EMPTY, ONE, THREE, TWO],
-        "tests/expected/all.c0.out",
-    )
+    if cfg!(target_os = "linux") {
+        // Linux version `tail` command with `-c0` option behaves differently from macOS version
+        run(
+            &["-c", "0", TWELVE, EMPTY, ONE, THREE, TWO],
+            "tests/expected/macos/all.c0.out",
+        )
+    } else {
+        run(
+            &["-c", "0", TWELVE, EMPTY, ONE, THREE, TWO],
+            "tests/expected/all.c0.out",
+        )
+    }
 }
 
 #[test]
