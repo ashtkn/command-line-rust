@@ -31,6 +31,7 @@ comm -123    $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.123.out
 
 if [ "$(uname)" == 'Darwin' ]; then
 # Linux `comm` command does not support -i option
+# Run this script on macOS machine and then commit the generated files
 comm -i -1   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.1.i.out
 comm -i -2   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.2.i.out
 comm -i -3   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.3.i.out
