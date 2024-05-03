@@ -159,6 +159,7 @@ fn file1_file2_123() -> Result<()> {
 
 // insensitive
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_1_i() -> Result<()> {
     run(
@@ -167,6 +168,7 @@ fn file1_file2_1_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_2_i() -> Result<()> {
     run(
@@ -183,6 +185,7 @@ fn file1_file2_3_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_1_2_i() -> Result<()> {
     run(
@@ -191,6 +194,7 @@ fn file1_file2_1_2_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_2_3_i() -> Result<()> {
     run(
@@ -199,6 +203,7 @@ fn file1_file2_2_3_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_13_i() -> Result<()> {
     run(
@@ -207,6 +212,7 @@ fn file1_file2_13_i() -> Result<()> {
     )
 }
 
+#[cfg(target_os = "macos")]
 #[test]
 fn file1_file2_123_i() -> Result<()> {
     run(

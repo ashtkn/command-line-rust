@@ -29,6 +29,8 @@ comm -23     $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.23.out
 comm -13     $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.13.out
 comm -123    $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.123.out
 
+if [ "$(uname)" == 'Darwin' ]; then
+# Linux `comm` command does not support -i option
 comm -i -1   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.1.i.out
 comm -i -2   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.2.i.out
 comm -i -3   $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.3.i.out
@@ -37,6 +39,7 @@ comm -i -12  $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.12.i.out
 comm -i -23  $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.23.i.out
 comm -i -13  $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.13.i.out
 comm -i -123 $IN_DIR/file1.txt $IN_DIR/file2.txt > $OUT_DIR/file1_file2.123.i.out
+fi
 
 comm         $IN_DIR/file1.txt $IN_DIR/file2.txt | sed "s/\t/:/g" > $OUT_DIR/file1_file2.delim.out
 comm -1      $IN_DIR/file1.txt $IN_DIR/file2.txt | sed "s/\t/:/g" > $OUT_DIR/file1_file2.1.delim.out
